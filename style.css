@@ -1,0 +1,259 @@
+    body {
+      margin: 0;
+      background: url('./assets/winxpWallpaper.jpg') no-repeat center center/cover;
+      height: 100vh;
+      overflow: hidden;
+      font-family: sans-serif;
+      text-shadow: 0px 4px 3px rgba(0,0,0,0.4),
+             0px 8px 13px rgba(0,0,0,0.1),
+             0px 18px 23px rgba(0,0,0,0.1);
+    }
+
+    .desktop {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 20px;
+      gap: 2.4rem;
+    }
+
+    .app {
+      width: 60px;
+      text-align: center;
+      color: white;
+      cursor: pointer;
+    }
+
+    .app img {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      margin-bottom: 5px;
+    }
+
+    .window {
+      position: absolute;
+      width: 400px;
+      height: 300px;
+      min-width: 200px;
+      min-height: 150px;
+      top: 120px;
+      left: 120px;
+      background: white;
+      border: 1px solid #444;
+      box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .window.maximized {
+      top: 0 !important;
+      left: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      border-radius: 0;
+    }
+
+    .window.minimized {
+      transform: scale(0);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .title-bar {
+      background: #444;
+      color: white;
+      padding: 5px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: move;
+      height: 30px;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    .window.maximized .title-bar {
+      cursor: default;
+    }
+
+    .title-text {
+      flex: 1;
+      font-size: 14px;
+    }
+
+    .window-controls {
+      display: flex;
+      gap: 2px;
+    }
+
+    .control-btn {
+      width: 24px;
+      height: 20px;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 2px;
+    }
+
+    .minimize-btn {
+      background: #ffc107;
+      color: #000;
+    }
+
+    .minimize-btn:hover {
+      background: #ffb300;
+    }
+
+    .maximize-btn {
+      background: #28a745;
+      color: white;
+    }
+
+    .maximize-btn:hover {
+      background: #218838;
+    }
+
+    .close-btn {
+      background: #dc3545;
+      color: white;
+    }
+
+    .close-btn:hover {
+      background: #c82333;
+    }
+
+    .window-content {
+      height: calc(100% - 30px);
+      position: relative;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Resize handles */
+    .resize-handle {
+      position: absolute;
+      background: transparent;
+    }
+
+    .window.maximized .resize-handle {
+      display: none;
+    }
+
+    .resize-n {
+      top: -3px;
+      left: 3px;
+      right: 3px;
+      height: 6px;
+      cursor: n-resize;
+    }
+
+    .resize-s {
+      bottom: -3px;
+      left: 3px;
+      right: 3px;
+      height: 6px;
+      cursor: s-resize;
+    }
+
+    .resize-e {
+      top: 3px;
+      right: -3px;
+      bottom: 3px;
+      width: 6px;
+      cursor: e-resize;
+    }
+
+    .resize-w {
+      top: 3px;
+      left: -3px;
+      bottom: 3px;
+      width: 6px;
+      cursor: w-resize;
+    }
+
+    .resize-ne {
+      top: -3px;
+      right: -3px;
+      width: 6px;
+      height: 6px;
+      cursor: ne-resize;
+    }
+
+    .resize-nw {
+      top: -3px;
+      left: -3px;
+      width: 6px;
+      height: 6px;
+      cursor: nw-resize;
+    }
+
+    .resize-se {
+      bottom: -3px;
+      right: -3px;
+      width: 6px;
+      height: 6px;
+      cursor: se-resize;
+    }
+
+    .resize-sw {
+      bottom: -3px;
+      left: -3px;
+      width: 6px;
+      height: 6px;
+      cursor: sw-resize;
+    }
+
+    /* Taskbar */
+.taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  gap: 5px;
+  z-index: 10000;
+}
+
+.taskbar-item {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: white;
+  padding: 5px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  font-size: 12px;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.taskbar-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.taskbar-item.active {
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+}

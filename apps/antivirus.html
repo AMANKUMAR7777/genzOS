@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureShield Pro - System Security Scan</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: #0d1421;
+            color: #e1e7ef;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        
+        .security-scanner {
+            background: #1a202c;
+            border: 2px solid #2d3748;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            width: 100%;
+            max-width: 750px;
+            padding: 40px;
+            position: relative;
+        }
+        
+        .header-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 32px;
+            gap: 20px;
+            border-bottom: 1px solid #2d3748;
+            padding-bottom: 24px;
+        }
+        
+        .app-logo {
+            width: 64px;
+            height: 64px;
+            background: #3182ce;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .app-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+            display: block;
+        }
+        
+        .app-logo::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid #3182ce;
+            border-radius: 12px;
+            animation: pulseRing 2s infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes pulseRing {
+            0% { transform: scale(1); opacity: 1; }
+            70% { transform: scale(1.2); opacity: 0; }
+            100% { transform: scale(1); opacity: 0; }
+        }
+        
+        .brand-info h1 {
+            font-size: 26px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+        
+        .brand-info p {
+            font-size: 14px;
+            color: #a0aec0;
+        }
+        
+        .scan-console {
+            background: #0f1419;
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            padding: 24px;
+            margin: 24px 0;
+            height: 220px;
+            overflow-y: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+        
+        .console-line {
+            font-size: 13px;
+            margin-bottom: 6px;
+            color: #68d391;
+            opacity: 0;
+            animation: textAppear 0.4s forwards;
+        }
+        
+        @keyframes textAppear {
+            to { opacity: 1; }
+        }
+        
+        .progress-wrapper {
+            background: #1a202c;
+            border-radius: 6px;
+            height: 24px;
+            margin: 24px 0;
+            overflow: hidden;
+            border: 1px solid #2d3748;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #3182ce, #4299e1);
+            border-radius: 6px;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+        
+        .progress-fill::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.2), 
+                transparent);
+            animation: progressGlow 1.5s infinite;
+        }
+        
+        @keyframes progressGlow {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .threat-warning {
+            color: #fc8181;
+            font-weight: 600;
+            animation: warningPulse 1s infinite alternate;
+        }
+        
+        @keyframes warningPulse {
+            from { color: #fc8181; }
+            to { color: #feb2b2; }
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+            font-family: inherit;
+        }
+        
+        .btn-primary {
+            background: #3182ce;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2c5282;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(49, 130, 206, 0.4);
+        }
+        
+        .btn-primary:disabled {
+            background: #4a5568;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-danger {
+            background: #e53e3e;
+            color: white;
+            display: none;
+        }
+        
+        .btn-danger:hover {
+            background: #c53030;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(229, 62, 62, 0.4);
+        }
+        
+        .security-alerts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #c53030;
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-weight: 600;
+            transform: translateY(-100%);
+            z-index: 1000;
+            animation: alertDrop 0.5s forwards;
+            box-shadow: 0 4px 12px rgba(197, 48, 48, 0.4);
+        }
+        
+        @keyframes alertDrop {
+            to { transform: translateY(0); }
+        }
+        
+        .floating-particles {
+            position: absolute;
+            font-size: 16px;
+            opacity: 0;
+            animation: particleFloat 8s linear infinite;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        @keyframes particleFloat {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translate(80px, 80px) rotate(360deg); opacity: 0; }
+        }
+        
+        @media (max-width: 768px) {
+            .security-scanner {
+                padding: 24px;
+                margin: 16px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .brand-info h1 {
+                font-size: 22px;
+            }
+            
+            .header-section {
+                gap: 16px;
+            }
+            
+            .app-logo {
+                width: 56px;
+                height: 56px;
+            }
+        }
+        
+        /* Additional responsive logo adjustments */
+        @media (max-width: 480px) {
+            .app-logo {
+                width: 48px;
+                height: 48px;
+            }
+            
+            .header-section {
+                gap: 12px;
+            }
+        }
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1a202c;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #2d3748;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="security-scanner">
+        <div class="header-section">
+            <div class="app-logo">
+                <img src="../assets/imgs/skibidi.png" alt="Skibidi Scanner Logo">
+            </div>
+            <div class="brand-info">
+                <h1>Skibidi scanner</h1>
+                <p>Advanced Sus Threat Detection & Systumm Protection</p>
+            </div>
+        </div>
+        
+        <div class="scan-console" id="scanOutput">
+            <!-- Scan results will appear here -->
+        </div>
+        
+        <div class="progress-wrapper">
+            <div class="progress-fill" id="scanProgress"></div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary" id="startScanBtn">Start System Scan</button>
+            <button class="btn btn-danger" id="removeThreatsBtn">Remove Threats ($49.99)</button>
+        </div>
+    </div>
+    
+    <div id="backgroundEffects"></div>
+    
+    <script>
+        class SecurityScanner {
+            constructor() {
+                this.scanButton = document.getElementById('startScanBtn');
+                this.removeButton = document.getElementById('removeThreatsBtn');
+                this.scanOutput = document.getElementById('scanOutput');
+                this.progressBar = document.getElementById('scanProgress');
+                this.backgroundEffects = document.getElementById('backgroundEffects');
+                
+                this.isScanning = false;
+                this.threatsDetected = 0;
+                
+                this.threatDatabase = [
+                    "Win32.Trojan.Agent",
+                    "Backdoor.RemoteAccess",
+                    "Adware.BrowserHijacker",
+                    "Spyware.KeyLogger",
+                    "Rootkit.SystemInfector",
+                    "Malware.CryptoMiner",
+                    "Worm.NetworkSpread",
+                    "Virus.FileInfector",
+                    "Ransomware.DataLocker",
+                    "PUP.BundledSoftware"
+                ];
+                
+                this.systemPaths = [
+                    "C:\\Windows\\System32\\drivers\\malware.sys",
+                    "C:\\Program Files\\Unknown\\suspicious.exe",
+                    "C:\\Users\\Public\\temp\\payload.dll",
+                    "D:\\Downloads\\infected_file.zip",
+                    "C:\\ProgramData\\Hidden\\backdoor.bin",
+                    "Registry: HKLM\\SOFTWARE\\Malicious",
+                    "Memory: Process ID 1337",
+                    "Network: Suspicious connection to 192.168.1.100",
+                    "Boot Sector: Modified MBR detected",
+                    "Browser: Unauthorized extension installed"
+                ];
+                
+                this.initializeApp();
+            }
+            
+            initializeApp() {
+                this.scanButton.addEventListener('click', () => this.startSystemScan());
+                this.removeButton.addEventListener('click', () => this.processPayment());
+                this.createBackgroundEffects();
+            }
+            
+            createBackgroundEffects() {
+                // Create floating security particles
+                for (let i = 0; i < 12; i++) {
+                    setTimeout(() => this.addFloatingParticle(), i * 800);
+                }
+            }
+            
+            addFloatingParticle() {
+                const particle = document.createElement('div');
+                particle.className = 'floating-particles';
+                particle.textContent = '🔒';
+                particle.style.left = `${Math.random() * 90}%`;
+                particle.style.top = `${Math.random() * 90}%`;
+                particle.style.animationDelay = `${Math.random() * 3}s`;
+                particle.style.animationDuration = `${Math.random() * 4 + 6}s`;
+                
+                this.backgroundEffects.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 10000);
+            }
+            
+            async startSystemScan() {
+                if (this.isScanning) return;
+                
+                this.isScanning = true;
+                this.threatsDetected = 0;
+                this.scanOutput.innerHTML = '';
+                this.progressBar.style.width = '0%';
+                this.scanButton.disabled = true;
+                this.removeButton.style.display = 'none';
+                
+                // Initialize scan sequence
+                this.addConsoleMessage("Initializing SecureShield scanning engine...");
+                await this.delay(600);
+                this.addConsoleMessage("Loading threat definition database...");
+                await this.delay(400);
+                this.addConsoleMessage("Starting comprehensive system analysis...");
+                await this.delay(500);
+                
+                this.runScanProgress();
+            }
+            
+            runScanProgress() {
+                let progress = 0;
+                const scanInterval = setInterval(() => {
+                    progress += Math.random() * 4;
+                    if (progress > 100) progress = 100;
+                    
+                    this.progressBar.style.width = `${progress}%`;
+                    
+                    // Randomly detect threats during scan
+                    if (Math.random() > 0.75 && progress < 85) {
+                        this.detectThreat();
+                        this.threatsDetected++;
+                    }
+                    
+                    // Add scan progress messages
+                    if (progress > 20 && progress < 25) {
+                        this.addConsoleMessage("Scanning system files and registry...");
+                    } else if (progress > 45 && progress < 50) {
+                        this.addConsoleMessage("Analyzing network connections...");
+                    } else if (progress > 70 && progress < 75) {
+                        this.addConsoleMessage("Checking boot sector integrity...");
+                    }
+                    
+                    if (progress === 100) {
+                        clearInterval(scanInterval);
+                        this.completeScan();
+                    }
+                }, 180);
+            }
+            
+            detectThreat() {
+                const randomThreat = this.threatDatabase[Math.floor(Math.random() * this.threatDatabase.length)];
+                const randomPath = this.systemPaths[Math.floor(Math.random() * this.systemPaths.length)];
+                
+                this.addConsoleMessage(`THREAT DETECTED: ${randomThreat} found at ${randomPath}`, true);
+                
+                // Show critical alert
+                this.showSecurityAlert(`Critical Security Threat: ${randomThreat}`);
+                
+                // Add visual particle effect
+                this.addFloatingParticle();
+            }
+            
+            showSecurityAlert(message) {
+                const alert = document.createElement('div');
+                alert.className = 'security-alerts';
+                alert.textContent = message;
+                document.body.appendChild(alert);
+                
+                setTimeout(() => alert.remove(), 2500);
+            }
+            
+            completeScan() {
+                setTimeout(() => {
+                    if (this.threatsDetected > 0) {
+                        this.addConsoleMessage(`Scan completed! ${this.threatsDetected} security threats detected.`, true);
+                        this.addConsoleMessage("Immediate action required to secure your system.", true);
+                        this.removeButton.style.display = 'block';
+                        
+                        // Make remove button pulse
+                        setInterval(() => {
+                            this.removeButton.style.opacity = this.removeButton.style.opacity === '0.7' ? '1' : '0.7';
+                        }, 600);
+                        
+                    } else {
+                        this.addConsoleMessage("Scan completed. No immediate threats found.");
+                        this.addConsoleMessage("Note: Advanced threats may require premium detection.");
+                    }
+                    
+                    this.scanButton.disabled = false;
+                    this.isScanning = false;
+                }, 800);
+            }
+            
+            async processPayment() {
+                if (this.isScanning) return;
+                
+                this.scanOutput.innerHTML = '';
+                this.addConsoleMessage("Connecting to SecureShield Premium services...");
+                await this.delay(1000);
+                this.addConsoleMessage("Processing payment of $49.99...");
+                await this.delay(1500);
+                this.addConsoleMessage("Payment confirmed. Activating threat removal...");
+                await this.delay(800);
+                
+                this.simulateThreatRemoval();
+            }
+            
+            simulateThreatRemoval() {
+                let removalProgress = 0;
+                const removalInterval = setInterval(() => {
+                    removalProgress += 12;
+                    this.progressBar.style.width = `${removalProgress}%`;
+                    
+                    if (removalProgress % 36 === 0) {
+                        const threat = this.threatDatabase[Math.floor(Math.random() * this.threatDatabase.length)];
+                        this.addConsoleMessage(`Quarantining ${threat}...`);
+                    }
+                    
+                    if (removalProgress >= 100) {
+                        clearInterval(removalInterval);
+                        setTimeout(() => {
+                            this.addConsoleMessage("All detected threats have been removed!");
+                            this.addConsoleMessage("Your system security has been improved by 0.2%");
+                            this.removeButton.style.display = 'none';
+                            this.progressBar.style.width = '0%';
+                            
+                            // Add new "threats" after cleanup
+                            setTimeout(() => {
+                                this.addConsoleMessage("Alert: New potential threat detected!", true);
+                                this.detectThreat();
+                                this.removeButton.style.display = 'block';
+                            }, 4000);
+                        }, 600);
+                    }
+                }, 250);
+            }
+            
+            addConsoleMessage(text, isWarning = false) {
+                const line = document.createElement('div');
+                line.className = `console-line ${isWarning ? 'threat-warning' : ''}`;
+                line.textContent = `> ${text}`;
+                this.scanOutput.appendChild(line);
+                this.scanOutput.scrollTop = this.scanOutput.scrollHeight;
+            }
+            
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve));
+            }
+        }
+        
+        // Initialize the security scanner when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new SecurityScanner();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sigma Camera</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      min-height: 100vh;
+      letter-spacing: 0.04em;
+    }
+    h1 {
+      letter-spacing: 0.14em;
+      margin-top: 50px;
+      margin-bottom: 28px;
+      font-weight: 700;
+      font-size: 2.3rem;
+      color: #fff;
+      text-shadow: 0 2px 3px #222;
+    }
+    .container {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #video {
+      background: #181818;
+      width: 352px;
+      height: 264px;
+      margin-bottom: 19px;
+      box-shadow: 0 8px 0 #222;
+      object-fit: cover;
+    }
+    .sigma-level-bg {
+      width: 342px;
+      height: 38px;
+      background: #111;
+      margin: 14px auto 0 auto;
+      border: none;
+      box-shadow: 0 2px 0 #222;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      justify-content: left;
+      position: relative;
+    }
+    .sigma-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 38px;
+      width: 0;
+      background: #fff;
+      opacity: 0.10;
+      z-index: 1;
+      transition: width 0.8s cubic-bezier(.41,1.03,.58,.98);
+    }
+    .sigma-level-txt {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      text-align: center;
+      font-size: 1.35rem;
+      color: #fff;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+    }
+    #takePhoto {
+      background: #000;
+      color: #fff;
+      border: 2px solid #fff;
+      width: 220px;
+      font-family: inherit;
+      font-size: 1.14rem;
+      font-weight: 700;
+      padding: 13px 0;
+      cursor: pointer;
+      margin-top: 22px;
+      transition: background 0.17s, color 0.17s;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+      box-shadow: 0 2px 0 #222;
+      outline: none;
+    }
+    #takePhoto:active {
+      background: #fff;
+      color: #000;
+    }
+    #canvas {
+      display: none;
+    }
+    #snapshot {
+      margin-top: 21px;
+      box-shadow: 0 8px 0 #222;
+      max-width: 352px;
+      background: #181818;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Sigma Camera App</h1>
+  <div class="container">
+    <video id="video" autoplay playsinline></video>
+    <div class="sigma-level-bg">
+      <div class="sigma-bar" id="sigmaBar"></div>
+      <div class="sigma-level-txt" id="sigmaLevel">Sigma Level: 0.0</div>
+    </div>
+    <button id="takePhoto">Take Sigma Photo</button>
+    <canvas id="canvas" width="352" height="264"></canvas>
+    <img id="snapshot" />
+  </div>
+  <script>
+    const video = document.getElementById('video');
+    const sigmaLevelDiv = document.getElementById('sigmaLevel');
+    const sigmaBar = document.getElementById('sigmaBar');
+    const takePhotoBtn = document.getElementById('takePhoto');
+    const canvas = document.getElementById('canvas');
+    const snapshot = document.getElementById('snapshot');
+
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function(stream) {
+          video.srcObject = stream;
+          video.play();
+        });
+    } else {
+      sigmaLevelDiv.textContent = 'Webcam not supported';
+    }
+
+    function randomSigmaLevel() {
+      return (Math.random()*10).toFixed(1);
+    }
+
+    let currentSigma = 0;
+
+    function updateSigmaLevel() {
+      const lvl = parseFloat(randomSigmaLevel());
+      gsap.to(sigmaBar, { width: (34.2*lvl) + 'px', duration: 0.8, ease: "power2.out" });
+      gsap.to({}, { duration: 0.1, onUpdate:function(){
+        let displayLvl = (currentSigma + (lvl-currentSigma)*this.progress()).toFixed(1);
+        sigmaLevelDiv.textContent = `Sigma Level: ${displayLvl}`;
+      }, onComplete:function(){
+        currentSigma = lvl;
+        sigmaLevelDiv.textContent = `Sigma Level: ${lvl}`;
+      }});
+    }
+    updateSigmaLevel();
+    setInterval(updateSigmaLevel, 1300);
+
+    takePhotoBtn.onclick = function() {
+      let ctx = canvas.getContext('2d');
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      ctx.font = '32px Roboto';
+      ctx.fillStyle = '#fff';
+      ctx.globalAlpha = 0.93;
+      ctx.fillText(sigmaLevelDiv.textContent, 17, 54);
+      ctx.globalAlpha = 1.0;
+      snapshot.src = canvas.toDataURL('image/png');
+      snapshot.style.display = 'block';
+    };
+  </script>
+</body>
+</html>

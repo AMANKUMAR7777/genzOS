@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RizzGPT - AI Dating Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            border-radius: 0 !important;
+            animation: none !important;
+            transition: none !important;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background-color: white;
+            color: black;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 2px solid black;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: black;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: black;
+            font-weight: 400;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        .left-section {
+            flex: 1;
+            background-color: white;
+            padding: 25px;
+            border: 2px solid black;
+        }
+
+        .right-section {
+            flex: 1;
+            background-color: white;
+            padding: 25px;
+            border: 2px solid black;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: black;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid black;
+            background-color: white;
+            color: black;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #333;
+            background-color: #f9f9f9;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        button {
+            background-color: white;
+            color: black;
+            border: 2px solid black;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        button:hover {
+            background-color: black;
+            color: white;
+        }
+
+        button:disabled {
+            background-color: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+            border-color: #ccc;
+        }
+
+        .response-area {
+            background-color: white;
+            border: 2px solid black;
+            padding: 20px;
+            min-height: 200px;
+            margin-top: 20px;
+        }
+
+        .response-area h3 {
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: 500;
+            color: black;
+        }
+
+        .response-text {
+            color: black;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            color: black;
+        }
+
+        .feature-list li:before {
+            content: "• ";
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .tone-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tone-btn {
+            padding: 10px;
+            border: 2px solid black;
+            background-color: white;
+            color: black;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .tone-btn.active {
+            background-color: black;
+            color: white;
+        }
+
+        .tone-btn:hover {
+            background-color: #f0f0f0;
+        }
+
+        .tone-btn.active:hover {
+            background-color: #333;
+        }
+
+        .settings-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid black;
+        }
+
+        .settings-section h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+            color: black;
+        }
+
+        .checkbox-group {
+            margin-bottom: 15px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        .checkbox-group label {
+            display: inline;
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .tone-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>RizzGPT</h1>
+            <p class="subtitle">Your AI Powered Rizzler</p>
+        </header>
+
+        <div class="main-content">
+            <div class="left-section">
+                <h2>Message Generator</h2>
+                
+                <div class="input-group">
+                    <label for="context">Conversation Context:</label>
+                    <textarea id="context" placeholder="Paste your conversation or describe the situation..."></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label for="messageType">Message Type:</label>
+                    <select id="messageType">
+                        <option value="opener">Opening Message</option>
+                        <option value="response">Response</option>
+                        <option value="followup">Follow-up</option>
+                        <option value="flirty">Flirty Message</option>
+                        <option value="casual">Casual Chat</option>
+                        <option value="askout">Ask Out</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Tone:</label>
+                    <div class="tone-buttons">
+                        <div class="tone-btn active" data-tone="funny">Funny</div>
+                        <div class="tone-btn" data-tone="charming">Charming</div>
+                        <div class="tone-btn" data-tone="confident">Confident</div>
+                        <div class="tone-btn" data-tone="sweet">Sweet</div>
+                    </div>
+                </div>
+
+                <button id="generateBtn">Generate Message</button>
+                <button id="regenerateBtn" style="display: none;">Generate Another</button>
+
+                <div class="settings-section">
+                    <h3>Settings</h3>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="includeEmoji" checked>
+                        <label for="includeEmoji">Include Emojis</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="keepShort" checked>
+                        <label for="keepShort">Keep Messages Short</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="personalized">
+                        <label for="personalized">Personalized Responses</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-section">
+                <div class="response-area">
+                    <h3>Generated Message</h3>
+                    <div class="response-text" id="responseText">
+                        Your AI-generated message will appear here. Fill out the form on the left and click "Generate Message" to get started.
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <h3>Features</h3>
+                    <ul class="feature-list">
+                        <li>Context-aware message generation</li>
+                        <li>Multiple personality tones</li>
+                        <li>Conversation analysis</li>
+                        <li>Smart emoji integration</li>
+                        <li>Length optimization</li>
+                        <li>Personalization options</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedTone = 'funny';
+
+        // Tone selection
+        document.querySelectorAll('.tone-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedTone = this.dataset.tone;
+            });
+        });
+
+        // Message templates by type and tone
+        const messageTemplates = {
+            opener: {
+                funny: [
+                    "I was going to use a cheesy pickup line, but I figured you've probably heard them all. So instead, here's a random fact: {fact}",
+                    "Hi! I'm conducting a survey on the best coffee shops in town. Want to help me with some field research?",
+                    "I promise I'm more interesting than my profile suggests. Prove me wrong by not responding 😄"
+                ],
+                charming: [
+                    "I couldn't help but notice your smile in your photos. It's quite captivating.",
+                    "Your profile caught my attention, and I'd love to know more about the person behind it.",
+                    "I'm intrigued by your interests. I have a feeling we'd have some great conversations."
+                ],
+                confident: [
+                    "I think we'd get along well. How about we skip the small talk and grab coffee this week?",
+                    "You seem like someone worth getting to know. What's your story?",
+                    "I'm not one for generic messages. You strike me as someone who appreciates authenticity."
+                ],
+                sweet: [
+                    "Your profile made me smile. I'd love to learn more about what makes you happy.",
+                    "You seem like someone who brings positive energy wherever you go. I'm drawn to that.",
+                    "I noticed we share some interests. I'd love to hear your thoughts on {shared_interest}."
+                ]
+            },
+            response: {
+                funny: [
+                    "Haha, that's hilarious! You've got a great sense of humor. I'm already impressed.",
+                    "I wasn't expecting that response! You've definitely caught my attention now.",
+                    "Okay, you win this round. But I'm not giving up that easily 😄"
+                ],
+                charming: [
+                    "I love your perspective on that. You're quite thoughtful.",
+                    "That's fascinating. I'd love to hear more about your experience with that.",
+                    "You have such an interesting way of looking at things."
+                ],
+                confident: [
+                    "I like your style. You're not afraid to speak your mind.",
+                    "That's exactly what I was hoping you'd say. Great minds think alike.",
+                    "I can tell you're someone who knows what they want. I respect that."
+                ],
+                sweet: [
+                    "That's so lovely. You seem like such a genuine person.",
+                    "I really appreciate you sharing that with me. Thank you for being open.",
+                    "You have such a kind heart. That's rare these days."
+                ]
+            }
+        };
+
+        // Generate message function
+        function generateMessage() {
+            const context = document.getElementById('context').value;
+            const messageType = document.getElementById('messageType').value;
+            const includeEmoji = document.getElementById('includeEmoji').checked;
+            const keepShort = document.getElementById('keepShort').checked;
+            const personalized = document.getElementById('personalized').checked;
+
+            const responseText = document.getElementById('responseText');
+            const generateBtn = document.getElementById('generateBtn');
+            const regenerateBtn = document.getElementById('regenerateBtn');
+
+            // Show loading
+            responseText.innerHTML = '<div class="loading">Generating your perfect message...</div>';
+            generateBtn.disabled = true;
+
+            // Simulate API call delay
+            setTimeout(() => {
+                let message = getRandomTemplate(messageType, selectedTone);
+                
+                // Apply personalization if enabled
+                if (personalized && context.trim()) {
+                    message = personalizeMessage(message, context);
+                }
+
+                // Add emojis if enabled
+                if (includeEmoji) {
+                    message = addEmojis(message, selectedTone);
+                }
+
+                // Adjust length if needed
+                if (keepShort) {
+                    message = shortenMessage(message);
+                }
+
+                responseText.innerHTML = `<div class="response-text">${message}</div>`;
+                generateBtn.disabled = false;
+                regenerateBtn.style.display = 'block';
+            }, 1500);
+        }
+
+        function getRandomTemplate(type, tone) {
+            const templates = messageTemplates[type] || messageTemplates.opener;
+            const toneTemplates = templates[tone] || templates.funny;
+            return toneTemplates[Math.floor(Math.random() * toneTemplates.length)];
+        }
+
+        function personalizeMessage(message, context) {
+            // Simple personalization based on context
+            if (context.toLowerCase().includes('travel')) {
+                message = message.replace('{shared_interest}', 'travel');
+            } else if (context.toLowerCase().includes('music')) {
+                message = message.replace('{shared_interest}', 'music');
+            } else if (context.toLowerCase().includes('food')) {
+                message = message.replace('{shared_interest}', 'food');
+            }
+            
+            message = message.replace('{fact}', 'Honey never spoils!');
+            return message;
+        }
+
+        function addEmojis(message, tone) {
+            const emojiMap = {
+                funny: ['😄', '😂', '🤣', '😅'],
+                charming: ['😊', '✨', '💫', '🌟'],
+                confident: ['😎', '💪', '🔥', '👑'],
+                sweet: ['💕', '🥰', '💖', '🌸']
+            };
+            
+            const emojis = emojiMap[tone] || emojiMap.funny;
+            const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            // Add emoji at the end if not already present
+            if (!message.includes('😄') && !message.includes('😊') && !message.includes('😎') && !message.includes('💕')) {
+                message += ' ' + randomEmoji;
+            }
+            
+            return message;
+        }
+
+        function shortenMessage(message) {
+            if (message.length > 120) {
+                return message.substring(0, 117) + '...';
+            }
+            return message;
+        }
+
+        // Event listeners
+        document.getElementById('generateBtn').addEventListener('click', generateMessage);
+        document.getElementById('regenerateBtn').addEventListener('click', generateMessage);
+
+        // Auto-resize textarea
+        document.getElementById('context').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+    </script>
+</body>
+</html>

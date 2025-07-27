@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FakeOS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="desktop">
+    <div class="app" data-url="./apps/antivirus.html" data-title="Skibidi">
+      <img src="./assets/imgs/skibidi.png" alt="Skibidi">
+      <div>Skibidi Antivirus</div>
+    </div>
+    <div class="app" data-url="./apps/rizzGPT.html" data-title="RizzGPT">
+      <img src="./assets/imgs/rizzgpt.png" alt="RizzGPT">
+      <div>RizzGPT</div>
+    </div>
+    <div class="app" data-url="./apps/sigmacam.html" data-title="Sigma Cam">
+      <img src="./assets/imgs/sigmacam.png" alt="SigmaCam">
+      <div>Sigma Cam</div>
+    </div>
+
+    <div class="app" data-url="./apps/notepad.html" data-title="Notepad">
+      <img src="./assets/imgs/notepad.webp" alt="Notepad">
+      <div>Notepad</div>
+    </div>
+    <div class="app" data-url="./apps/bananaclock.html" data-title="bananini clock">
+      <img src="./assets/imgs/bananini-clock.png" alt="clock">
+      <div>Bananini Clock</div>
+    </div>
+    <div class="app" data-url="./apps/rizztube.html" data-title="BrainrotTube">
+      <img src="./assets/imgs/rizztube.png" alt="BrainrotTube">
+      <div>Rizz Tube</div>
+    </div>
+    
+  </div>
+
+  <div id="window-container"></div>
+  <div class="taskbar" id="taskbar"></div>
+
+  <script>
+    let zIndex = 1;
+    let windowCount = 0;
+
+    document.querySelectorAll('.app').forEach(app => {
+      app.addEventListener('click', () => {
+        const url = app.getAttribute('data-url');
+        const title = app.getAttribute('data-title');
+        openApp(url, title);
+      });
+    });
+
+    function openApp(url, title) {
+      const windowId = `window-${++windowCount}`;
+      const win = document.createElement('div');
+      win.className = 'window';
+      win.style.zIndex = zIndex++;
+      win.setAttribute('data-window-id', windowId);
+      win.setAttribute('data-title', title);
+
+      // Store original size and position for restore functionality
+      win.setAttribute('data-original-width', '400');
+      win.setAttribute('data-original-height', '300');
+      win.setAttribute('data-original-left', '120');
+      win.setAttribute('data-original-top', '120');
+
+      win.innerHTML = `
+        <div class="title-bar" onmousedown="startDrag(event, this.parentElement)">
+          <span class="title-text">${title}</span>
+          <div class="window-controls">
+            <button class="control-btn minimize-btn" onclick="minimizeWindow(this.closest('.window'))" title="Minimize">−</button>
+            <button class="control-btn maximize-btn" onclick="toggleMaximize(this.closest('.window'))" title="Maximize">□</button>
+            <button class="control-btn close-btn" onclick="closeWindow(this.closest('.window'))" title="Close">×</button>
+          </div>
+        </div>
+        <div class="window-content">
+          <iframe src="${url}"></iframe>
+        </div>
+        <div class="resize-handle resize-n" onmousedown="startResize(event, this.parentElement, 'n')"></div>
+        <div class="resize-handle resize-s" onmousedown="startResize(event, this.parentElement, 's')"></div>
+        <div class="resize-handle resize-e" onmousedown="startResize(event, this.parentElement, 'e')"></div>
+        <div class="resize-handle resize-w" onmousedown="startResize(event, this.parentElement, 'w')"></div>
+        <div class="resize-handle resize-ne" onmousedown="startResize(event, this.parentElement, 'ne')"></div>
+        <div class="resize-handle resize-nw" onmousedown="startResize(event, this.parentElement, 'nw')"></div>
+        <div class="resize-handle resize-se" onmousedown="startResize(event, this.parentElement, 'se')"></div>
+        <div class="resize-handle resize-sw" onmousedown="startResize(event, this.parentElement, 'sw')"></div>
+      `;
+
+      document.getElementById('window-container').appendChild(win);
+
+      // Focus window when clicked
+      win.addEventListener('mousedown', () => {
+        focusWindow(win);
+      });
+
+      // Add taskbar item
+      addTaskbarItem(windowId, title);
+
+      // Double-click title bar to maximize
+      win.querySelector('.title-bar').addEventListener('dblclick', () => {
+        toggleMaximize(win);
+      });
+    }
+
+    function focusWindow(win) {
+      win.style.zIndex = zIndex++;
+      updateTaskbarActive(win.getAttribute('data-window-id'));
+    }
+
+    function minimizeWindow(win) {
+      win.classList.add('minimized');
+      updateTaskbarActive(null);
+    }
+
+    function toggleMaximize(win) {
+      if (win.classList.contains('maximized')) {
+        // Restore window
+        win.classList.remove('maximized');
+        win.style.width = win.getAttribute('data-original-width') + 'px';
+        win.style.height = win.getAttribute('data-original-height') + 'px';
+        win.style.left = win.getAttribute('data-original-left') + 'px';
+        win.style.top = win.getAttribute('data-original-top') + 'px';
+        win.querySelector('.maximize-btn').innerHTML = '□';
+        win.querySelector('.maximize-btn').title = 'Maximize';
+      } else {
+        // Store current position and size
+        win.setAttribute('data-original-width', win.style.width.replace('px', '') || '400');
+        win.setAttribute('data-original-height', win.style.height.replace('px', '') || '300');
+        win.setAttribute('data-original-left', win.style.left.replace('px', '') || '120');
+        win.setAttribute('data-original-top', win.style.top.replace('px', '') || '120');
+        
+        // Maximize window
+        win.classList.add('maximized');
+        win.querySelector('.maximize-btn').innerHTML = '❐';
+        win.querySelector('.maximize-btn').title = 'Restore';
+      }
+    }
+
+    function closeWindow(win) {
+      const windowId = win.getAttribute('data-window-id');
+      win.remove();
+      removeTaskbarItem(windowId);
+    }
+
+    function addTaskbarItem(windowId, title) {
+      const taskbar = document.getElementById('taskbar');
+      const item = document.createElement('div');
+      item.className = 'taskbar-item active';
+      item.setAttribute('data-window-id', windowId);
+      item.textContent = title;
+      item.onclick = () => restoreWindow(windowId);
+      taskbar.appendChild(item);
+    }
+
+    function removeTaskbarItem(windowId) {
+      const item = document.querySelector(`[data-window-id="${windowId}"]`);
+      if (item && item.classList.contains('taskbar-item')) {
+        item.remove();
+      }
+    }
+
+    function updateTaskbarActive(activeWindowId) {
+      document.querySelectorAll('.taskbar-item').forEach(item => {
+        if (item.getAttribute('data-window-id') === activeWindowId) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+    }
+
+    function restoreWindow(windowId) {
+      const win = document.querySelector(`[data-window-id="${windowId}"]`);
+      if (win) {
+        win.classList.remove('minimized');
+        focusWindow(win);
+      }
+    }
+
+    function startDrag(e, el) {
+      if (el.classList.contains('maximized')) return;
+      
+      e.preventDefault();
+      const offsetX = e.clientX - el.offsetLeft;
+      const offsetY = e.clientY - el.offsetTop;
+
+      function drag(e) {
+        el.style.left = Math.max(0, Math.min(window.innerWidth - el.offsetWidth, e.clientX - offsetX)) + 'px';
+        el.style.top = Math.max(0, Math.min(window.innerHeight - el.offsetHeight, e.clientY - offsetY)) + 'px';
+      }
+
+      document.addEventListener('mousemove', drag);
+      document.addEventListener('mouseup', () => {
+        document.removeEventListener('mousemove', drag);
+      }, { once: true });
+    }
+
+    function startResize(e, el, direction) {
+      if (el.classList.contains('maximized')) return;
+      
+      e.preventDefault();
+      e.stopPropagation();
+
+      const startX = e.clientX;
+      const startY = e.clientY;
+      const startWidth = parseInt(document.defaultView.getComputedStyle(el).width, 10);
+      const startHeight = parseInt(document.defaultView.getComputedStyle(el).height, 10);
+      const startLeft = el.offsetLeft;
+      const startTop = el.offsetTop;
+
+      function resize(e) {
+        const deltaX = e.clientX - startX;
+        const deltaY = e.clientY - startY;
+
+        let newWidth = startWidth;
+        let newHeight = startHeight;
+        let newLeft = startLeft;
+        let newTop = startTop;
+
+        // Handle horizontal resizing
+        if (direction.includes('e')) {
+          newWidth = Math.max(200, startWidth + deltaX);
+        } else if (direction.includes('w')) {
+          newWidth = Math.max(200, startWidth - deltaX);
+          newLeft = Math.min(startLeft + deltaX, startLeft + startWidth - 200);
+        }
+
+        // Handle vertical resizing
+        if (direction.includes('s')) {
+          newHeight = Math.max(150, startHeight + deltaY);
+        } else if (direction.includes('n')) {
+          newHeight = Math.max(150, startHeight - deltaY);
+          newTop = Math.min(startTop + deltaY, startTop + startHeight - 150);
+        }
+
+        // Apply constraints to keep window on screen
+        newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - newWidth));
+        newTop = Math.max(0, Math.min(newTop, window.innerHeight - newHeight));
+        newWidth = Math.min(newWidth, window.innerWidth - newLeft);
+        newHeight = Math.min(newHeight, window.innerHeight - newTop);
+
+        el.style.width = newWidth + 'px';
+        el.style.height = newHeight + 'px';
+        el.style.left = newLeft + 'px';
+        el.style.top = newTop + 'px';
+      }
+
+      document.addEventListener('mousemove', resize);
+      document.addEventListener('mouseup', () => {
+        document.removeEventListener('mousemove', resize);
+      }, { once: true });
+    }
+  </script>
+</body>
+</html>

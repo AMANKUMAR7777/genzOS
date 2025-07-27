@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Notepad</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            border-radius: 0 !important;
+            animation: none !important;
+            transition: none !important;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background-color: white;
+            color: black;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 2px solid black;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: black;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: black;
+            font-weight: 400;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        .left-section {
+            flex: 1;
+            background-color: white;
+            padding: 25px;
+            border: 2px solid black;
+        }
+
+        .right-section {
+            flex: 1;
+            background-color: white;
+            padding: 25px;
+            border: 2px solid black;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: black;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid black;
+            background-color: white;
+            color: black;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #333;
+            background-color: #f9f9f9;
+        }
+
+        textarea {
+            min-height: 400px;
+            resize: vertical;
+            font-family: 'Courier New', monospace;
+        }
+
+        button {
+            background-color: white;
+            color: black;
+            border: 2px solid black;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        button:hover {
+            background-color: black;
+            color: white;
+        }
+
+        button:disabled {
+            background-color: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+            border-color: #ccc;
+        }
+
+        .toolbar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .toolbar button {
+            padding: 8px 12px;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .notes-list {
+            background-color: white;
+            border: 2px solid black;
+            padding: 20px;
+            min-height: 300px;
+        }
+
+        .notes-list h3 {
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: 500;
+            color: black;
+            border-bottom: 1px solid black;
+            padding-bottom: 10px;
+        }
+
+        .note-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            color: black;
+        }
+
+        .note-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .note-item.active {
+            background-color: black;
+            color: white;
+            padding: 10px;
+            margin: 0 -10px;
+        }
+
+        .note-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .note-preview {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .note-item.active .note-preview {
+            color: #ccc;
+        }
+
+        .stats-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid black;
+        }
+
+        .stats-section h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+            color: black;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .stat-label {
+            color: black;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            color: black;
+            font-weight: 400;
+        }
+
+        .search-section {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            margin-bottom: 10px;
+        }
+
+        .no-notes {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 40px 20px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .toolbar {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>My Notepad</h1>
+            <p class="subtitle">Simple. Clean. Organized.</p>
+        </header>
+
+        <div class="main-content">
+            <div class="left-section">
+                <div class="search-section">
+                    <div class="input-group">
+                        <label for="searchInput">Search Notes:</label>
+                        <input type="text" id="searchInput" class="search-input" placeholder="Search your notes...">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="noteTitle">Note Title:</label>
+                    <input type="text" id="noteTitle" placeholder="Enter note title...">
+                </div>
+
+                <div class="input-group">
+                    <label for="noteContent">Note Content:</label>
+                    <textarea id="noteContent" placeholder="Start writing your note here..."></textarea>
+                </div>
+
+                <div class="toolbar">
+                    <button id="saveBtn">Save Note</button>
+                    <button id="newBtn">New Note</button>
+                    <button id="deleteBtn">Delete Note</button>
+                    <button id="clearBtn">Clear All</button>
+                    <button id="exportBtn">Export</button>
+                    <button id="importBtn">Import</button>
+                </div>
+
+                <div class="stats-section">
+                    <h3>Statistics</h3>
+                    <div class="stat-item">
+                        <span class="stat-label">Total Notes:</span>
+                        <span class="stat-value" id="totalNotes">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Total Words:</span>
+                        <span class="stat-value" id="totalWords">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Current Words:</span>
+                        <span class="stat-value" id="currentWords">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Characters:</span>
+                        <span class="stat-value" id="currentChars">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-section">
+                <div class="notes-list">
+                    <h3>Your Notes</h3>
+                    <div id="notesList">
+                        <div class="no-notes">
+                            No notes yet. Create your first note by filling out the form and clicking "Save Note".
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let notes = JSON.parse(localStorage.getItem('mynotes')) || [];
+        let currentNoteId = null;
+
+        // Initialize the app
+        function init() {
+            renderNotesList();
+            updateStats();
+            
+            // Event listeners
+            document.getElementById('saveBtn').addEventListener('click', saveNote);
+            document.getElementById('newBtn').addEventListener('click', newNote);
+            document.getElementById('deleteBtn').addEventListener('click', deleteNote);
+            document.getElementById('clearBtn').addEventListener('click', clearAll);
+            document.getElementById('exportBtn').addEventListener('click', exportNotes);
+            document.getElementById('importBtn').addEventListener('click', importNotes);
+            document.getElementById('searchInput').addEventListener('input', searchNotes);
+            document.getElementById('noteContent').addEventListener('input', updateWordCount);
+            document.getElementById('noteTitle').addEventListener('input', updateWordCount);
+        }
+
+        function saveNote() {
+            const title = document.getElementById('noteTitle').value.trim();
+            const content = document.getElementById('noteContent').value.trim();
+            
+            if (!title || !content) {
+                alert('Please enter both title and content');
+                return;
+            }
+
+            const timestamp = new Date().toLocaleString();
+            
+            if (currentNoteId) {
+                // Update existing note
+                const noteIndex = notes.findIndex(note => note.id === currentNoteId);
+                if (noteIndex !== -1) {
+                    notes[noteIndex] = {
+                        ...notes[noteIndex],
+                        title,
+                        content,
+                        modified: timestamp
+                    };
+                }
+            } else {
+                // Create new note
+                const newNote = {
+                    id: Date.now(),
+                    title,
+                    content,
+                    created: timestamp,
+                    modified: timestamp
+                };
+                notes.unshift(newNote);
+            }
+
+            localStorage.setItem('mynotes', JSON.stringify(notes));
+            renderNotesList();
+            updateStats();
+        }
+
+        function newNote() {
+            currentNoteId = null;
+            document.getElementById('noteTitle').value = '';
+            document.getElementById('noteContent').value = '';
+            document.querySelectorAll('.note-item').forEach(item => item.classList.remove('active'));
+            updateWordCount();
+        }
+
+        function deleteNote() {
+            if (!currentNoteId) {
+                alert('Please select a note to delete');
+                return;
+            }
+
+            if (confirm('Are you sure you want to delete this note?')) {
+                notes = notes.filter(note => note.id !== currentNoteId);
+                localStorage.setItem('mynotes', JSON.stringify(notes));
+                newNote();
+                renderNotesList();
+                updateStats();
+            }
+        }
+
+        function clearAll() {
+            if (confirm('Are you sure you want to delete all notes? This cannot be undone.')) {
+                notes = [];
+                localStorage.setItem('mynotes', JSON.stringify(notes));
+                newNote();
+                renderNotesList();
+                updateStats();
+            }
+        }
+
+        function exportNotes() {
+            const dataStr = JSON.stringify(notes, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'my-notes.json';
+            link.click();
+        }
+
+        function importNotes() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const importedNotes = JSON.parse(e.target.result);
+                            if (Array.isArray(importedNotes)) {
+                                notes = importedNotes;
+                                localStorage.setItem('mynotes', JSON.stringify(notes));
+                                renderNotesList();
+                                updateStats();
+                                newNote();
+                            } else {
+                                alert('Invalid file format');
+                            }
+                        } catch (error) {
+                            alert('Error reading file');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        function renderNotesList() {
+            const notesList = document.getElementById('notesList');
+            
+            if (notes.length === 0) {
+                notesList.innerHTML = '<div class="no-notes">No notes yet. Create your first note by filling out the form and clicking "Save Note".</div>';
+                return;
+            }
+
+            notesList.innerHTML = notes.map(note => `
+                <div class="note-item" data-id="${note.id}" onclick="loadNote(${note.id})">
+                    <div class="note-title">${note.title}</div>
+                    <div class="note-preview">${note.content.substring(0, 100)}${note.content.length > 100 ? '...' : ''}</div>
+                    <div class="note-preview">Modified: ${note.modified}</div>
+                </div>
+            `).join('');
+        }
+
+        function loadNote(id) {
+            const note = notes.find(n => n.id === id);
+            if (note) {
+                currentNoteId = id;
+                document.getElementById('noteTitle').value = note.title;
+                document.getElementById('noteContent').value = note.content;
+                
+                // Update active state
+                document.querySelectorAll('.note-item').forEach(item => item.classList.remove('active'));
+                document.querySelector(`[data-id="${id}"]`).classList.add('active');
+                
+                updateWordCount();
+            }
+        }
+
+        function searchNotes() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filteredNotes = notes.filter(note => 
+                note.title.toLowerCase().includes(searchTerm) || 
+                note.content.toLowerCase().includes(searchTerm)
+            );
+
+            const notesList = document.getElementById('notesList');
+            
+            if (filteredNotes.length === 0) {
+                notesList.innerHTML = '<div class="no-notes">No notes found matching your search.</div>';
+                return;
+            }
+
+            notesList.innerHTML = filteredNotes.map(note => `
+                <div class="note-item" data-id="${note.id}" onclick="loadNote(${note.id})">
+                    <div class="note-title">${note.title}</div>
+                    <div class="note-preview">${note.content.substring(0, 100)}${note.content.length > 100 ? '...' : ''}</div>
+                    <div class="note-preview">Modified: ${note.modified}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            const totalNotes = notes.length;
+            const totalWords = notes.reduce((total, note) => total + countWords(note.content), 0);
+            
+            document.getElementById('totalNotes').textContent = totalNotes;
+            document.getElementById('totalWords').textContent = totalWords;
+        }
+
+        function updateWordCount() {
+            const content = document.getElementById('noteContent').value;
+            const title = document.getElementById('noteTitle').value;
+            const words = countWords(content);
+            const chars = content.length;
+            
+            document.getElementById('currentWords').textContent = words;
+            document.getElementById('currentChars').textContent = chars;
+        }
+
+        function countWords(text) {
+            return text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+        }
+        init();
+    </script>
+</body>
+</html>

@@ -1,259 +1,470 @@
-    body {
-      margin: 0;
-      background: url('./assets/winxpWallpaper.jpg') no-repeat center center/cover;
-      height: 100vh;
-      overflow: hidden;
-      font-family: sans-serif;
-      text-shadow: 0px 4px 3px rgba(0,0,0,0.4),
-             0px 8px 13px rgba(0,0,0,0.1),
-             0px 18px 23px rgba(0,0,0,0.1);
-    }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    .desktop {
-      display: flex;
-      flex-wrap: wrap;
-      padding: 20px;
-      gap: 2.4rem;
-    }
+body {
+    margin: 0;
+    background: #008080;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'MS Sans Serif', sans-serif;
+    font-size: 11px;
+}
 
-    .app {
-      width: 60px;
-      text-align: center;
-      color: white;
-      cursor: pointer;
-    }
+/* Boot Screen */
+.boot-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000080;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
 
-    .app img {
-      width: 48px;
-      height: 48px;
-      border-radius: 10px;
-      margin-bottom: 5px;
-    }
+.boot-logo {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-family: 'Times New Roman', serif;
+}
 
-    .window {
-      position: absolute;
-      width: 400px;
-      height: 300px;
-      min-width: 200px;
-      min-height: 150px;
-      top: 120px;
-      left: 120px;
-      background: white;
-      border: 1px solid #444;
-      box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3);
-      transition: all 0.2s ease;
-    }
+.boot-version {
+    font-size: 16px;
+    margin-bottom: 40px;
+    color: #c0c0c0;
+}
 
-    .window.maximized {
-      top: 0 !important;
-      left: 0 !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      border-radius: 0;
-    }
+.loading-bar {
+    width: 300px;
+    height: 20px;
+    border: 2px inset #c0c0c0;
+    background: #808080;
+    margin-bottom: 20px;
+    position: relative;
+}
 
-    .window.minimized {
-      transform: scale(0);
-      opacity: 0;
-      pointer-events: none;
-    }
+.loading-progress {
+    height: 100%;
+    background: #0000ff;
+    width: 0%;
+    animation: loadProgress 3s ease-in-out forwards;
+}
 
-    .title-bar {
-      background: #444;
-      color: white;
-      padding: 5px 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: move;
-      height: 30px;
-      box-sizing: border-box;
-      user-select: none;
-    }
+@keyframes loadProgress {
+    to { width: 100%; }
+}
 
-    .window.maximized .title-bar {
-      cursor: default;
-    }
+.boot-text {
+    font-size: 14px;
+    color: #ffffff;
+}
 
-    .title-text {
-      flex: 1;
-      font-size: 14px;
-    }
+/* Desktop */
+.desktop {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+    gap: 30px;
+    height: calc(100vh - 40px);
+    background: #008080;
+    position: relative;
+    align-content: flex-start;
+}
 
-    .window-controls {
-      display: flex;
-      gap: 2px;
-    }
+/* App styling that works with YOUR existing icons */
+.app {
+    width: 80px;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 0;
+    transition: background-color 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-    .control-btn {
-      width: 24px;
-      height: 20px;
-      border: none;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 2px;
-    }
+.app:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
 
-    .minimize-btn {
-      background: #ffc107;
-      color: #000;
-    }
+.app:active {
+    background: rgba(255, 255, 255, 0.2);
+}
 
-    .minimize-btn:hover {
-      background: #ffb300;
-    }
+/* This will work with YOUR existing PNG icons */
+.app img {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 8px;
+    image-rendering: pixelated; /* Gives retro feel */
+    border: none;
+}
 
-    .maximize-btn {
-      background: #28a745;
-      color: white;
-    }
+.app span {
+    display: block;
+    font-size: 11px;
+    text-shadow: 1px 1px 0px #000000;
+    line-height: 1.2;
+}
 
-    .maximize-btn:hover {
-      background: #218838;
-    }
+/* Quote Display - retro style */
+.quote-display {
+    position: absolute;
+    bottom: 60px;
+    right: 20px;
+    width: 280px;
+}
 
-    .close-btn {
-      background: #dc3545;
-      color: white;
-    }
+.quote-window {
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
+    box-shadow: 2px 2px 0px #808080;
+}
 
-    .close-btn:hover {
-      background: #c82333;
-    }
+.quote-title {
+    background: #000080;
+    color: white;
+    padding: 4px 8px;
+    font-weight: bold;
+    font-size: 11px;
+}
 
-    .window-content {
-      height: calc(100% - 30px);
-      position: relative;
-    }
+.quote-content {
+    padding: 15px;
+    text-align: center;
+}
 
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
+#meme-quote {
+    font-size: 12px;
+    color: #000000;
+    margin-bottom: 15px;
+    min-height: 40px;
+    line-height: 1.4;
+}
 
-    /* Resize handles */
-    .resize-handle {
-      position: absolute;
-      background: transparent;
-    }
+#new-quote {
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
+    padding: 4px 12px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: 'MS Sans Serif', sans-serif;
+}
 
-    .window.maximized .resize-handle {
-      display: none;
-    }
+#new-quote:active {
+    border: 2px inset #c0c0c0;
+}
 
-    .resize-n {
-      top: -3px;
-      left: 3px;
-      right: 3px;
-      height: 6px;
-      cursor: n-resize;
-    }
+/* Windows - keeping your existing functionality */
+.window {
+    position: absolute;
+    width: 400px;
+    height: 300px;
+    min-width: 200px;
+    min-height: 150px;
+    top: 120px;
+    left: 120px;
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
+    box-shadow: 2px 2px 0px #808080;
+    display: none;
+    z-index: 100;
+}
 
-    .resize-s {
-      bottom: -3px;
-      left: 3px;
-      right: 3px;
-      height: 6px;
-      cursor: s-resize;
-    }
+.window.maximized {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: calc(100vh - 40px) !important;
+    border-radius: 0;
+}
 
-    .resize-e {
-      top: 3px;
-      right: -3px;
-      bottom: 3px;
-      width: 6px;
-      cursor: e-resize;
-    }
+.title-bar {
+    background: #000080;
+    color: white;
+    padding: 4px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: move;
+    height: 24px;
+    box-sizing: border-box;
+    user-select: none;
+    font-size: 11px;
+    font-weight: bold;
+}
 
-    .resize-w {
-      top: 3px;
-      left: -3px;
-      bottom: 3px;
-      width: 6px;
-      cursor: w-resize;
-    }
+.title-text {
+    flex: 1;
+}
 
-    .resize-ne {
-      top: -3px;
-      right: -3px;
-      width: 6px;
-      height: 6px;
-      cursor: ne-resize;
-    }
+.window-controls {
+    display: flex;
+    gap: 2px;
+}
 
-    .resize-nw {
-      top: -3px;
-      left: -3px;
-      width: 6px;
-      height: 6px;
-      cursor: nw-resize;
-    }
+.control-btn {
+    width: 20px;
+    height: 16px;
+    border: 1px outset #c0c0c0;
+    background: #c0c0c0;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: bold;
+    color: #000000;
+    font-family: 'MS Sans Serif', sans-serif;
+}
 
-    .resize-se {
-      bottom: -3px;
-      right: -3px;
-      width: 6px;
-      height: 6px;
-      cursor: se-resize;
-    }
+.control-btn:active {
+    border: 1px inset #c0c0c0;
+}
 
-    .resize-sw {
-      bottom: -3px;
-      left: -3px;
-      width: 6px;
-      height: 6px;
-      cursor: sw-resize;
-    }
+.window-content {
+    height: calc(100% - 24px);
+    background: #c0c0c0;
+    padding: 15px;
+    overflow: auto;
+}
 
-    /* Taskbar */
+/* Keep all your existing window content styles */
+.app-content h2 {
+    color: #000080;
+    font-size: 16px;
+    margin-bottom: 15px;
+    font-family: 'MS Sans Serif', sans-serif;
+}
+
+.app-content p {
+    color: #000000;
+    font-size: 12px;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.fake-video-container {
+    background: #000000;
+    border: 2px inset #c0c0c0;
+    padding: 20px;
+    text-align: center;
+    margin: 15px 0;
+}
+
+.fake-video {
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.retro-btn {
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
+    padding: 6px 12px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: 'MS Sans Serif', sans-serif;
+    margin-top: 10px;
+}
+
+.retro-btn:active {
+    border: 2px inset #c0c0c0;
+}
+
+.terminal-content {
+    background: #000000;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    padding: 15px;
+    height: 100%;
+    line-height: 1.4;
+}
+
+.terminal-line {
+    margin-bottom: 5px;
+}
+
+.terminal-cursor {
+    animation: blink 1s infinite;
+    display: inline-block;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+/* Keep ALL your existing resize handle styles */
+.resize-handle {
+    position: absolute;
+    background: transparent;
+}
+
+.window.maximized .resize-handle {
+    display: none;
+}
+
+.resize-n {
+    top: -3px;
+    left: 3px;
+    right: 3px;
+    height: 6px;
+    cursor: n-resize;
+}
+
+.resize-s {
+    bottom: -3px;
+    left: 3px;
+    right: 3px;
+    height: 6px;
+    cursor: s-resize;
+}
+
+.resize-e {
+    top: 3px;
+    right: -3px;
+    bottom: 3px;
+    width: 6px;
+    cursor: e-resize;
+}
+
+.resize-w {
+    top: 3px;
+    left: -3px;
+    bottom: 3px;
+    width: 6px;
+    cursor: w-resize;
+}
+
+.resize-ne {
+    top: -3px;
+    right: -3px;
+    width: 6px;
+    height: 6px;
+    cursor: ne-resize;
+}
+
+.resize-nw {
+    top: -3px;
+    left: -3px;
+    width: 6px;
+    height: 6px;
+    cursor: nw-resize;
+}
+
+.resize-se {
+    bottom: -3px;
+    right: -3px;
+    width: 6px;
+    height: 6px;
+    cursor: se-resize;
+}
+
+.resize-sw {
+    bottom: -3px;
+    left: -3px;
+    width: 6px;
+    height: 6px;
+    cursor: sw-resize;
+}
+
+/* Taskbar */
 .taskbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 40px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  gap: 5px;
-  z-index: 10000;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: #c0c0c0;
+    border-top: 2px outset #c0c0c0;
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    gap: 4px;
+    z-index: 10000;
+    box-shadow: 0 -1px 0px #808080;
+}
+
+.start-btn {
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
+    padding: 4px 12px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: bold;
+    font-family: 'MS Sans Serif', sans-serif;
+    color: #000000;
+}
+
+.start-btn:active {
+    border: 2px inset #c0c0c0;
+}
+
+.taskbar-items {
+    flex: 1;
+    display: flex;
+    gap: 2px;
 }
 
 .taskbar-item {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: white;
-  padding: 5px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  cursor: pointer;
-  font-size: 12px;
-  max-width: 150px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  transition: all 0.3s ease;
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
+    color: #000000;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 11px;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: 'MS Sans Serif', sans-serif;
 }
 
-.taskbar-item:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  transform: translateY(-1px);
-}
-
+.taskbar-item:active,
 .taskbar-item.active {
-  background: rgba(255, 255, 255, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  font-weight: 500;
-  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+    border: 2px inset #c0c0c0;
+}
+
+.system-tray {
+    background: #c0c0c0;
+    border: 1px inset #c0c0c0;
+    padding: 4px 8px;
+    font-size: 11px;
+    color: #000000;
+    font-family: 'MS Sans Serif', sans-serif;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .desktop {
+        gap: 20px;
+        padding: 15px;
+    }
+    
+    .app {
+        width: 70px;
+    }
+    
+    .app img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .quote-display {
+        position: relative;
+        bottom: auto;
+        right: auto;
+        width: 100%;
+        margin-top: 20px;
+    }
 }

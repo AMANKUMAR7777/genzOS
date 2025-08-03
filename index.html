@@ -1,254 +1,214 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>FakeOS</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GenZ OS - Retro Edition</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
-  <div class="desktop">
-    <div class="app" data-url="./apps/antivirus.html" data-title="Skibidi">
-      <img src="./assets/imgs/skibidi.png" alt="Skibidi">
-      <div>Skibidi Antivirus</div>
-    </div>
-    <div class="app" data-url="./apps/rizzGPT.html" data-title="RizzGPT">
-      <img src="./assets/imgs/rizzgpt.png" alt="RizzGPT">
-      <div>RizzGPT</div>
-    </div>
-    <div class="app" data-url="./apps/sigmacam.html" data-title="Sigma Cam">
-      <img src="./assets/imgs/sigmacam.png" alt="SigmaCam">
-      <div>Sigma Cam</div>
+    <!-- Boot Screen -->
+    <div class="boot-screen">
+        <div class="boot-content">
+            <div class="boot-logo">GenZ OS</div>
+            <div class="boot-version">Version 2.0 - Nostalgic Edition</div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <div class="boot-text">Loading your cringe memories...</div>
+        </div>
     </div>
 
-    <div class="app" data-url="./apps/notepad.html" data-title="Notepad">
-      <img src="./assets/imgs/notepad.webp" alt="Notepad">
-      <div>Notepad</div>
+    <!-- Desktop -->
+    <div class="desktop">
+        <!-- YOUR EXISTING APPS WITH CORRECT PATHS -->
+        <div class="app" data-app="skibidi-antivirus">
+            <img src="./assets/imgs/skibidiantivirus.png" alt="Skibidi Antivirus">
+            <span>Skibidi Antivirus</span>
+        </div>
+        
+        <div class="app" data-app="sigma-cam">
+            <img src="./assets/imgs/sigmacam.png" alt="Sigma Cam">
+            <span>Sigma Cam</span>
+        </div>
+        
+        <div class="app" data-app="bananini-clock">
+            <img src="./assets/imgs/bananini-clock.png" alt="Bananini Clock">
+            <span>Bananini Clock</span>
+        </div>
+        
+        <div class="app" data-app="rizzgpt">
+            <img src="./assets/imgs/rizzgpt.png" alt="RizzGPT">
+            <span>RizzGPT</span>
+        </div>
+        
+        <div class="app" data-app="notepad">
+            <img src="./assets/imgs/notepad.webp" alt="Notepad">
+            <span>Notepad</span>
+        </div>
+        
+        <div class="app" data-app="rizz-tube">
+            <img src="./assets/imgs/rizztube.png" alt="Rizz Tube">
+            <span>Rizz Tube</span>
+        </div>
+
+        <!-- Retro Quote Display -->
+        <div class="quote-display">
+            <div class="quote-window">
+                <div class="quote-title">Daily Brainrot Quote</div>
+                <div class="quote-content">
+                    <p id="meme-quote">No cap this OS is straight fire fr fr</p>
+                    <button id="new-quote">Get New Quote</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="app" data-url="./apps/bananaclock.html" data-title="bananini clock">
-      <img src="./assets/imgs/bananini-clock.png" alt="clock">
-      <div>Bananini Clock</div>
-    </div>
-    <div class="app" data-url="./apps/rizztube.html" data-title="BrainrotTube">
-      <img src="./assets/imgs/rizztube.png" alt="BrainrotTube">
-      <div>Rizz Tube</div>
-    </div>
-    
-  </div>
 
-  <div id="window-container"></div>
-  <div class="taskbar" id="taskbar"></div>
-
-  <script>
-    let zIndex = 1;
-    let windowCount = 0;
-
-    document.querySelectorAll('.app').forEach(app => {
-      app.addEventListener('click', () => {
-        const url = app.getAttribute('data-url');
-        const title = app.getAttribute('data-title');
-        openApp(url, title);
-      });
-    });
-
-    function openApp(url, title) {
-      const windowId = `window-${++windowCount}`;
-      const win = document.createElement('div');
-      win.className = 'window';
-      win.style.zIndex = zIndex++;
-      win.setAttribute('data-window-id', windowId);
-      win.setAttribute('data-title', title);
-
-      // Store original size and position for restore functionality
-      win.setAttribute('data-original-width', '400');
-      win.setAttribute('data-original-height', '300');
-      win.setAttribute('data-original-left', '120');
-      win.setAttribute('data-original-top', '120');
-
-      win.innerHTML = `
-        <div class="title-bar" onmousedown="startDrag(event, this.parentElement)">
-          <span class="title-text">${title}</span>
-          <div class="window-controls">
-            <button class="control-btn minimize-btn" onclick="minimizeWindow(this.closest('.window'))" title="Minimize">−</button>
-            <button class="control-btn maximize-btn" onclick="toggleMaximize(this.closest('.window'))" title="Maximize">□</button>
-            <button class="control-btn close-btn" onclick="closeWindow(this.closest('.window'))" title="Close">×</button>
-          </div>
+    <!-- App windows will load your existing app files -->
+    <div class="window" id="skibidi-antivirus-window">
+        <div class="title-bar">
+            <span class="title-text">Skibidi Antivirus</span>
+            <div class="window-controls">
+                <button class="control-btn minimize-btn">_</button>
+                <button class="control-btn maximize-btn">[]</button>
+                <button class="control-btn close-btn">X</button>
+            </div>
         </div>
         <div class="window-content">
-          <iframe src="${url}"></iframe>
+            <iframe src="./apps/antivirus.html" width="100%" height="100%"></iframe>
         </div>
-        <div class="resize-handle resize-n" onmousedown="startResize(event, this.parentElement, 'n')"></div>
-        <div class="resize-handle resize-s" onmousedown="startResize(event, this.parentElement, 's')"></div>
-        <div class="resize-handle resize-e" onmousedown="startResize(event, this.parentElement, 'e')"></div>
-        <div class="resize-handle resize-w" onmousedown="startResize(event, this.parentElement, 'w')"></div>
-        <div class="resize-handle resize-ne" onmousedown="startResize(event, this.parentElement, 'ne')"></div>
-        <div class="resize-handle resize-nw" onmousedown="startResize(event, this.parentElement, 'nw')"></div>
-        <div class="resize-handle resize-se" onmousedown="startResize(event, this.parentElement, 'se')"></div>
-        <div class="resize-handle resize-sw" onmousedown="startResize(event, this.parentElement, 'sw')"></div>
-      `;
+        <div class="resize-handle resize-n"></div>
+        <div class="resize-handle resize-s"></div>
+        <div class="resize-handle resize-e"></div>
+        <div class="resize-handle resize-w"></div>
+        <div class="resize-handle resize-ne"></div>
+        <div class="resize-handle resize-nw"></div>
+        <div class="resize-handle resize-se"></div>
+        <div class="resize-handle resize-sw"></div>
+    </div>
 
-      document.getElementById('window-container').appendChild(win);
+    <div class="window" id="sigma-cam-window">
+        <div class="title-bar">
+            <span class="title-text">Sigma Cam</span>
+            <div class="window-controls">
+                <button class="control-btn minimize-btn">_</button>
+                <button class="control-btn maximize-btn">[]</button>
+                <button class="control-btn close-btn">X</button>
+            </div>
+        </div>
+        <div class="window-content">
+            <iframe src="./apps/sigmacam.html" width="100%" height="100%"></iframe>
+        </div>
+        <div class="resize-handle resize-n"></div>
+        <div class="resize-handle resize-s"></div>
+        <div class="resize-handle resize-e"></div>
+        <div class="resize-handle resize-w"></div>
+        <div class="resize-handle resize-ne"></div>
+        <div class="resize-handle resize-nw"></div>
+        <div class="resize-handle resize-se"></div>
+        <div class="resize-handle resize-sw"></div>
+    </div>
 
-      // Focus window when clicked
-      win.addEventListener('mousedown', () => {
-        focusWindow(win);
-      });
+    <div class="window" id="bananini-clock-window">
+        <div class="title-bar">
+            <span class="title-text">Bananini Clock</span>
+            <div class="window-controls">
+                <button class="control-btn minimize-btn">_</button>
+                <button class="control-btn maximize-btn">[]</button>
+                <button class="control-btn close-btn">X</button>
+            </div>
+        </div>
+        <div class="window-content">
+            <iframe src="./apps/bananiniclock.html" width="100%" height="100%"></iframe>
+        </div>
+        <div class="resize-handle resize-n"></div>
+        <div class="resize-handle resize-s"></div>
+        <div class="resize-handle resize-e"></div>
+        <div class="resize-handle resize-w"></div>
+        <div class="resize-handle resize-ne"></div>
+        <div class="resize-handle resize-nw"></div>
+        <div class="resize-handle resize-se"></div>
+        <div class="resize-handle resize-sw"></div>
+    </div>
 
-      // Add taskbar item
-      addTaskbarItem(windowId, title);
+    <div class="window" id="rizzgpt-window">
+        <div class="title-bar">
+            <span class="title-text">RizzGPT</span>
+            <div class="window-controls">
+                <button class="control-btn minimize-btn">_</button>
+                <button class="control-btn maximize-btn">[]</button>
+                <button class="control-btn close-btn">X</button>
+            </div>
+        </div>
+        <div class="window-content">
+            <iframe src="./apps/rizzgpt.html" width="100%" height="100%"></iframe>
+        </div>
+        <div class="resize-handle resize-n"></div>
+        <div class="resize-handle resize-s"></div>
+        <div class="resize-handle resize-e"></div>
+        <div class="resize-handle resize-w"></div>
+        <div class="resize-handle resize-ne"></div>
+        <div class="resize-handle resize-nw"></div>
+        <div class="resize-handle resize-se"></div>
+        <div class="resize-handle resize-sw"></div>
+    </div>
 
-      // Double-click title bar to maximize
-      win.querySelector('.title-bar').addEventListener('dblclick', () => {
-        toggleMaximize(win);
-      });
-    }
+    <div class="window" id="notepad-window">
+        <div class="title-bar">
+            <span class="title-text">Notepad</span>
+            <div class="window-controls">
+                <button class="control-btn minimize-btn">_</button>
+                <button class="control-btn maximize-btn">[]</button>
+                <button class="control-btn close-btn">X</button>
+            </div>
+        </div>
+        <div class="window-content">
+            <iframe src="./apps/notepad.html" width="100%" height="100%"></iframe>
+        </div>
+        <div class="resize-handle resize-n"></div>
+        <div class="resize-handle resize-s"></div>
+        <div class="resize-handle resize-e"></div>
+        <div class="resize-handle resize-w"></div>
+        <div class="resize-handle resize-ne"></div>
+        <div class="resize-handle resize-nw"></div>
+        <div class="resize-handle resize-se"></div>
+        <div class="resize-handle resize-sw"></div>
+    </div>
 
-    function focusWindow(win) {
-      win.style.zIndex = zIndex++;
-      updateTaskbarActive(win.getAttribute('data-window-id'));
-    }
+    <div class="window" id="rizz-tube-window">
+        <div class="title-bar">
+            <span class="title-text">Rizz Tube</span>
+            <div class="window-controls">
+                <button class="control-btn minimize-btn">_</button>
+                <button class="control-btn maximize-btn">[]</button>
+                <button class="control-btn close-btn">X</button>
+            </div>
+        </div>
+        <div class="window-content">
+            <iframe src="./apps/rizztube.html" width="100%" height="100%"></iframe>
+        </div>
+        <div class="resize-handle resize-n"></div>
+        <div class="resize-handle resize-s"></div>
+        <div class="resize-handle resize-e"></div>
+        <div class="resize-handle resize-w"></div>
+        <div class="resize-handle resize-ne"></div>
+        <div class="resize-handle resize-nw"></div>
+        <div class="resize-handle resize-se"></div>
+        <div class="resize-handle resize-sw"></div>
+    </div>
 
-    function minimizeWindow(win) {
-      win.classList.add('minimized');
-      updateTaskbarActive(null);
-    }
+    <!-- Taskbar -->
+    <div class="taskbar">
+        <div class="start-btn">
+            <span class="start-text">Start (no cap)</span>
+        </div>
+        <div class="taskbar-items"></div>
+        <div class="system-tray">
+            <span class="time-display"></span>
+        </div>
+    </div>
 
-    function toggleMaximize(win) {
-      if (win.classList.contains('maximized')) {
-        // Restore window
-        win.classList.remove('maximized');
-        win.style.width = win.getAttribute('data-original-width') + 'px';
-        win.style.height = win.getAttribute('data-original-height') + 'px';
-        win.style.left = win.getAttribute('data-original-left') + 'px';
-        win.style.top = win.getAttribute('data-original-top') + 'px';
-        win.querySelector('.maximize-btn').innerHTML = '□';
-        win.querySelector('.maximize-btn').title = 'Maximize';
-      } else {
-        // Store current position and size
-        win.setAttribute('data-original-width', win.style.width.replace('px', '') || '400');
-        win.setAttribute('data-original-height', win.style.height.replace('px', '') || '300');
-        win.setAttribute('data-original-left', win.style.left.replace('px', '') || '120');
-        win.setAttribute('data-original-top', win.style.top.replace('px', '') || '120');
-        
-        // Maximize window
-        win.classList.add('maximized');
-        win.querySelector('.maximize-btn').innerHTML = '❐';
-        win.querySelector('.maximize-btn').title = 'Restore';
-      }
-    }
-
-    function closeWindow(win) {
-      const windowId = win.getAttribute('data-window-id');
-      win.remove();
-      removeTaskbarItem(windowId);
-    }
-
-    function addTaskbarItem(windowId, title) {
-      const taskbar = document.getElementById('taskbar');
-      const item = document.createElement('div');
-      item.className = 'taskbar-item active';
-      item.setAttribute('data-window-id', windowId);
-      item.textContent = title;
-      item.onclick = () => restoreWindow(windowId);
-      taskbar.appendChild(item);
-    }
-
-    function removeTaskbarItem(windowId) {
-      const item = document.querySelector(`[data-window-id="${windowId}"]`);
-      if (item && item.classList.contains('taskbar-item')) {
-        item.remove();
-      }
-    }
-
-    function updateTaskbarActive(activeWindowId) {
-      document.querySelectorAll('.taskbar-item').forEach(item => {
-        if (item.getAttribute('data-window-id') === activeWindowId) {
-          item.classList.add('active');
-        } else {
-          item.classList.remove('active');
-        }
-      });
-    }
-
-    function restoreWindow(windowId) {
-      const win = document.querySelector(`[data-window-id="${windowId}"]`);
-      if (win) {
-        win.classList.remove('minimized');
-        focusWindow(win);
-      }
-    }
-
-    function startDrag(e, el) {
-      if (el.classList.contains('maximized')) return;
-      
-      e.preventDefault();
-      const offsetX = e.clientX - el.offsetLeft;
-      const offsetY = e.clientY - el.offsetTop;
-
-      function drag(e) {
-        el.style.left = Math.max(0, Math.min(window.innerWidth - el.offsetWidth, e.clientX - offsetX)) + 'px';
-        el.style.top = Math.max(0, Math.min(window.innerHeight - el.offsetHeight, e.clientY - offsetY)) + 'px';
-      }
-
-      document.addEventListener('mousemove', drag);
-      document.addEventListener('mouseup', () => {
-        document.removeEventListener('mousemove', drag);
-      }, { once: true });
-    }
-
-    function startResize(e, el, direction) {
-      if (el.classList.contains('maximized')) return;
-      
-      e.preventDefault();
-      e.stopPropagation();
-
-      const startX = e.clientX;
-      const startY = e.clientY;
-      const startWidth = parseInt(document.defaultView.getComputedStyle(el).width, 10);
-      const startHeight = parseInt(document.defaultView.getComputedStyle(el).height, 10);
-      const startLeft = el.offsetLeft;
-      const startTop = el.offsetTop;
-
-      function resize(e) {
-        const deltaX = e.clientX - startX;
-        const deltaY = e.clientY - startY;
-
-        let newWidth = startWidth;
-        let newHeight = startHeight;
-        let newLeft = startLeft;
-        let newTop = startTop;
-
-        // Handle horizontal resizing
-        if (direction.includes('e')) {
-          newWidth = Math.max(200, startWidth + deltaX);
-        } else if (direction.includes('w')) {
-          newWidth = Math.max(200, startWidth - deltaX);
-          newLeft = Math.min(startLeft + deltaX, startLeft + startWidth - 200);
-        }
-
-        // Handle vertical resizing
-        if (direction.includes('s')) {
-          newHeight = Math.max(150, startHeight + deltaY);
-        } else if (direction.includes('n')) {
-          newHeight = Math.max(150, startHeight - deltaY);
-          newTop = Math.min(startTop + deltaY, startTop + startHeight - 150);
-        }
-
-        // Apply constraints to keep window on screen
-        newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - newWidth));
-        newTop = Math.max(0, Math.min(newTop, window.innerHeight - newHeight));
-        newWidth = Math.min(newWidth, window.innerWidth - newLeft);
-        newHeight = Math.min(newHeight, window.innerHeight - newTop);
-
-        el.style.width = newWidth + 'px';
-        el.style.height = newHeight + 'px';
-        el.style.left = newLeft + 'px';
-        el.style.top = newTop + 'px';
-      }
-
-      document.addEventListener('mousemove', resize);
-      document.addEventListener('mouseup', () => {
-        document.removeEventListener('mousemove', resize);
-      }, { once: true });
-    }
-  </script>
+    <script src="script.js"></script>
 </body>
 </html>

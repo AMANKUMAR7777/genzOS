@@ -1,3 +1,4 @@
+>Note: I have used AI to optimize and clean up my code and for few more features. The main logic and structure were written by me — I just needed help making it less messy.
 # GenzOS
 
 **GenzOS** is a fake, web-based operating system that is based on questionable humor of Gen Z, along with a bit of Italian brainrot. It’s not designed to be useful. It’s meant to feel like something funny in the back of your mind.

@@ -1,59 +1,64 @@
+//I have optimized my all the code using AI because mine one is soo unoptiomized and unclean
+
 class RetroGenZOS {
     constructor() {
+        // added some quotes using AI because im not a good writer
         this.quotes = [
-            "No cap this OS is straight fire fr fr",
-            "Periodt this is giving main character energy",
-            "The way this OS serves looks... chefs kiss",
-            "Say less this OS understood the assignment",
-            "Not me crying over how aesthetic this is",
-            "This OS really said I am THAT girl",
-            "Living for this energy no notes",
-            "The OS is OSing respectfully",
-            "This hits different when youre built different",
-            "Main character moment right here chief"
+            "ngl this OS kinda slaps different",
+            "bestie this is giving me LIFE rn",
+            "the aesthetic is literally *chef's kiss* immaculate",
+            "ok but like... this OS really understood the assignment tho",
+            "why am i actually emotional over an operating system???",
+            "this OS said 'i'm the moment' and honestly? valid",
+            "the vibes are immaculate no notes whatsoever",
+            "OS really said 'watch me serve' and then DID THAT",
+            "this just hits different when you're chronically online",
+            "main character energy fr no cap detected"
         ];
-        
+
         this.currentQuoteIndex = 0;
-        this.windows = new Map();
-        this.zIndex = 100;
+        this.openWindows = new Map(); // changed from windows bc it was confusing me
+        this.topZIndex = 100;
         
-        this.init();
+        this.initialize();
     }
 
-    init() {
-        this.setupBootScreen();
-        this.setupApps();
-        this.setupQuoteGenerator();
-        this.setupWindowSystem();
-        this.setupTaskbar();
-        this.updateTime();
+    initialize() {
+        this.doBootSequence();
+        this.setupClickyApps();
+        this.makeQuoteGeneratorWork();
+        this.setupAllTheWindowStuff();
+        this.setupTaskbarThings();
+        this.startClock();
     }
 
-    setupBootScreen() {
+    doBootSequence() {
         setTimeout(() => {
             gsap.to('.boot-screen', {
                 opacity: 0,
                 duration: 1,
                 onComplete: () => {
                     document.querySelector('.boot-screen').style.display = 'none';
-                    this.animateDesktopLoad();
+                    this.animateDesktopAppearance();
                 }
             });
-        }, 3500);
+        }, 3500); // 3.5 seconds
     }
 
-    animateDesktopLoad() {
+    animateDesktopAppearance() {
         const apps = document.querySelectorAll('.app');
         
+        // make apps pop in with some nice animations
         gsap.from(apps, {
             scale: 0,
             rotation: 180,
             opacity: 0,
             duration: 0.6,
             stagger: 0.1,
-            ease: "back.out(1.7)"
+            ease: "back.out(1.7)" // this ease is *chef's kiss*
         });
 
+        // slides in the quote box from the right
         gsap.from('.quote-display', {
             x: 300,
             opacity: 0,
@@ -63,15 +68,16 @@ class RetroGenZOS {
         });
     }
 
-    setupApps() {
-        const apps = document.querySelectorAll('.app');
+    setupClickyApps() {
+        const allApps = document.querySelectorAll('.app');
         
-        apps.forEach(app => {
+        allApps.forEach(app => {
+            // handles clicks
             app.addEventListener('click', () => {
-                const appName = app.dataset.app;
-                this.openWindow(appName);
+                const appType = app.dataset.app;
+                this.launchWindow(appType);
                 
-                // Retro click animation
+                // little click animtaions
                 gsap.to(app, {
                     scale: 0.9,
                     duration: 0.1,
@@ -81,6 +87,7 @@ class RetroGenZOS {
                 });
             });
 
+            // hover effects
             app.addEventListener('mouseenter', () => {
                 gsap.to(app, {
                     scale: 1.05,
@@ -90,245 +97,238 @@ class RetroGenZOS {
             });
 
             app.addEventListener('mouseleave', () => {
-                gsap.to(app, {
-                    scale: 1,
-                    duration: 0.2,
-                    ease: "power2.out"
-                });
+                gsap.to(app, { scale: 1, duration: 0.2, ease: "power2.out" });
             });
         });
     }
 
-    setupQuoteGenerator() {
-        const quoteBtn = document.getElementById('new-quote');
-        const quoteText = document.getElementById('meme-quote');
+    makeQuoteGeneratorWork() {
+        const btn = document.getElementById('new-quote');
+        const textEl = document.getElementById('meme-quote');
         
-        quoteBtn.addEventListener('click', () => {
+        btn.addEventListener('click', () => {
             this.currentQuoteIndex = (this.currentQuoteIndex + 1) % this.quotes.length;
             
-            gsap.to(quoteText, {
+            // fade out, change text, fade back in effects
+            gsap.to(textEl, {
                 opacity: 0,
                 duration: 0.2,
                 onComplete: () => {
-                    quoteText.textContent = this.quotes[this.currentQuoteIndex];
-                    gsap.to(quoteText, {
-                        opacity: 1,
-                        duration: 0.2
-                    });
+                    textEl.textContent = this.quotes[this.currentQuoteIndex];
+                    gsap.to(textEl, { opacity: 1, duration: 0.2 });
                 }
             });
         });
     }
 
-    setupWindowSystem() {
-        // Keep your existing window drag and resize functionality
-        this.setupWindowDragging();
-        this.setupWindowControls();
-        this.setupWindowResize();
+    setupAllTheWindowStuff() {
+        this.makeDraggable();
+        this.handleWindowButtons();
     }
 
-    openWindow(appName) {
-        const window = document.getElementById(`${appName}-window`);
-        if (!window) return;
+    launchWindow(appName) {
+        const windowEl = document.getElementById(`${appName}-window`);
+        if (!windowEl) {
+            console.log(`couldn't find window for ${appName} rip`);
+            return;
+        }
 
-        this.zIndex++;
-        window.style.zIndex = this.zIndex;
-        window.style.display = 'block';
-        
-        // Random position for new windows
+        this.topZIndex++;
+        windowEl.style.zIndex = this.topZIndex;
+        windowEl.style.display = 'block';
+
+        // random position so windows don't overlap eachothers
         const maxX = window.innerWidth - 400;
         const maxY = window.innerHeight - 300;
-        const x = Math.random() * maxX;
-        const y = Math.random() * maxY;
-        
-        gsap.set(window, {
-            x: x,
-            y: y,
+        const randomX = Math.random() * Math.max(0, maxX);
+        const randomY = Math.random() * Math.max(0, maxY);
+
+        gsap.set(windowEl, {
+            x: randomX,
+            y: randomY,
             scale: 0,
             opacity: 0
         });
-        
-        gsap.to(window, {
+
+        // animates the window appearing
+        gsap.to(windowEl, {
             scale: 1,
             opacity: 1,
             duration: 0.3,
             ease: "back.out(1.7)"
         });
 
-        this.addTaskbarItem(appName, window);
+        this.addToTaskbar(appName, windowEl);
     }
 
-    setupWindowControls() {
+    handleWindowButtons() {
+        // using event delegation bc it's more cleaner
         document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('close-btn')) {
-                const window = e.target.closest('.window');
-                this.closeWindow(window);
-            }
-            
-            if (e.target.classList.contains('minimize-btn')) {
-                const window = e.target.closest('.window');
-                this.minimizeWindow(window);
-            }
-            
-            if (e.target.classList.contains('maximize-btn')) {
-                const window = e.target.closest('.window');
-                this.toggleMaximize(window);
+            if (e.target.matches('.close-btn')) {
+                const win = e.target.closest('.window');
+                this.closeWindow(win);
+            } else if (e.target.matches('.minimize-btn')) {
+                const win = e.target.closest('.window');
+                this.hideWindow(win);
+            } else if (e.target.matches('.maximize-btn')) {
+                const win = e.target.closest('.window');
+                this.toggleFullscreen(win);
             }
         });
     }
 
-    closeWindow(window) {
-        gsap.to(window, {
+    closeWindow(windowEl) {
+        gsap.to(windowEl, {
             scale: 0,
             opacity: 0,
             duration: 0.2,
             ease: "power2.in",
             onComplete: () => {
-                window.style.display = 'none';
-                this.removeTaskbarItem(window);
+                windowEl.style.display = 'none';
+                this.removeFromTaskbar(windowEl);
             }
         });
     }
 
-    minimizeWindow(window) {
-        gsap.to(window, {
+    hideWindow(windowEl) {
+        // animation of minimize to taskbar
+        gsap.to(windowEl, {
             scale: 0.1,
             y: window.innerHeight,
             opacity: 0,
             duration: 0.3,
             ease: "power2.in",
-            onComplete: () => {
-                window.style.display = 'none';
-            }
+            onComplete: () => { windowEl.style.display = 'none'; }
         });
     }
 
-    toggleMaximize(window) {
-        if (window.classList.contains('maximized')) {
-            window.classList.remove('maximized');
-            gsap.to(window, {
-                x: window.dataset.originalX || 120,
-                y: window.dataset.originalY || 120,
-                width: window.dataset.originalWidth || 400,
-                height: window.dataset.originalHeight || 300,
+    toggleFullscreen(windowEl) {
+        const isMaxed = windowEl.classList.contains('maximized');
+        
+        if (isMaxed) {
+            // restores it to the original size
+            windowEl.classList.remove('maximized');
+            gsap.to(windowEl, {
+                x: windowEl.dataset.origX || 120,
+                y: windowEl.dataset.origY || 120, 
+                width: windowEl.dataset.origW || 400,
+                height: windowEl.dataset.origH || 300,
                 duration: 0.3,
                 ease: "power2.out"
             });
         } else {
-            // Store original dimensions
-            const rect = window.getBoundingClientRect();
-            window.dataset.originalX = rect.left;
-            window.dataset.originalY = rect.top;
-            window.dataset.originalWidth = rect.width;
-            window.dataset.originalHeight = rect.height;
+            // saves the current position and size before maximizing
+            const rect = windowEl.getBoundingClientRect();
+            windowEl.dataset.origX = rect.left;
+            windowEl.dataset.origY = rect.top;
+            windowEl.dataset.origW = rect.width;
+            windowEl.dataset.origH = rect.height;
             
-            window.classList.add('maximized');
+            windowEl.classList.add('maximized');
+            // CSS handles the real maximization
         }
     }
 
-    setupWindowDragging() {
-        // Keep your existing drag functionality from the original code
-        let isDragging = false;
-        let currentWindow = null;
-        let startX, startY, startLeft, startTop;
+    makeDraggable() {
+        let dragging = false;
+        let activeWindow = null;
+        let startMouseX, startMouseY, startWinLeft, startWinTop;
 
         document.addEventListener('mousedown', (e) => {
-            if (e.target.classList.contains('title-bar') || e.target.closest('.title-bar')) {
-                currentWindow = e.target.closest('.window');
-                if (currentWindow && !currentWindow.classList.contains('maximized')) {
-                    isDragging = true;
-                    startX = e.clientX;
-                    startY = e.clientY;
-                    startLeft = currentWindow.offsetLeft;
-                    startTop = currentWindow.offsetTop;
+            // drag from title bar
+            if (e.target.closest('.title-bar')) {
+                activeWindow = e.target.closest('.window');
+                if (activeWindow && !activeWindow.classList.contains('maximized')) {
+                    dragging = true;
+                    startMouseX = e.clientX;
+                    startMouseY = e.clientY;
+                    startWinLeft = activeWindow.offsetLeft;
+                    startWinTop = activeWindow.offsetTop;
                     
-                    this.zIndex++;
-                    currentWindow.style.zIndex = this.zIndex;
+                    // brings to front
+                    this.topZIndex++;
+                    activeWindow.style.zIndex = this.topZIndex;
                 }
             }
         });
 
         document.addEventListener('mousemove', (e) => {
-            if (isDragging && currentWindow) {
-                const deltaX = e.clientX - startX;
-                const deltaY = e.clientY - startY;
-                currentWindow.style.left = (startLeft + deltaX) + 'px';
-                currentWindow.style.top = (startTop + deltaY) + 'px';
+            if (dragging && activeWindow) {
+                const deltaX = e.clientX - startMouseX;
+                const deltaY = e.clientY - startMouseY;
+                activeWindow.style.left = `${startWinLeft + deltaX}px`;
+                activeWindow.style.top = `${startWinTop + deltaY}px`;
             }
         });
 
         document.addEventListener('mouseup', () => {
-            isDragging = false;
-            currentWindow = null;
+            dragging = false;
+            activeWindow = null;
         });
     }
 
-    setupWindowResize() {
-        // Keep your existing resize functionality
-        // This would be your existing resize handle code
-    }
-
-    addTaskbarItem(appName, window) {
-        const taskbarItems = document.querySelector('.taskbar-items');
-        const existingItem = document.querySelector(`[data-window="${appName}"]`);
+    addToTaskbar(appName, windowEl) {
+        const taskbarArea = document.querySelector('.taskbar-items');
+        let existingBtn = document.querySelector(`[data-window="${appName}"]`);
         
-        if (!existingItem) {
-            const item = document.createElement('div');
-            item.className = 'taskbar-item active';
-            item.dataset.window = appName;
-            item.textContent = window.querySelector('.title-text').textContent;
-            
-            item.addEventListener('click', () => {
-                if (window.style.display === 'none') {
-                    window.style.display = 'block';
-                    gsap.fromTo(window, 
-                        { scale: 0.1, y: window.innerHeight, opacity: 0 },
-                        { scale: 1, y: 0, opacity: 1, duration: 0.3, ease: "back.out(1.7)" }
-                    );
-                } else {
-                    this.zIndex++;
-                    window.style.zIndex = this.zIndex;
-                }
-            });
-            
-            taskbarItems.appendChild(item);
-        }
+        if (existingBtn) return; 
+
+        const btn = document.createElement('div');
+        btn.className = 'taskbar-item active';
+        btn.dataset.window = appName;
+        btn.textContent = windowEl.querySelector('.title-text')?.textContent || appName;
+
+        btn.addEventListener('click', () => {
+            if (windowEl.style.display === 'none') {
+                
+                windowEl.style.display = 'block';
+                gsap.fromTo(windowEl,
+                    { scale: 0.1, y: window.innerHeight, opacity: 0 },
+                    { scale: 1, y: windowEl.dataset.origY || 0, opacity: 1, 
+                      duration: 0.3, ease: "back.out(1.7)" }
+                );
+            } else {
+                //bring to front
+                this.topZIndex++;
+                windowEl.style.zIndex = this.topZIndex;
+            }
+        });
+
+        taskbarArea.appendChild(btn);
     }
 
-    removeTaskbarItem(window) {
-        const appName = window.id.replace('-window', '');
-        const taskbarItem = document.querySelector(`[data-window="${appName}"]`);
-        if (taskbarItem) {
-            taskbarItem.remove();
-        }
+    removeFromTaskbar(windowEl) {
+        const appName = windowEl.id.replace('-window', '');
+        const btn = document.querySelector(`[data-window="${appName}"]`);
+        btn?.remove();
     }
 
-    setupTaskbar() {
-        const startBtn = document.querySelector('.start-btn');
-        startBtn.addEventListener('click', () => {
-            // Add start menu functionality here if needed
-            console.log('Start menu clicked - no cap!');
+    setupTaskbarThings() {
+        const startButton = document.querySelector('.start-btn');
+        startButton?.addEventListener('click', () => {
+            console.log('start menu clicked but like... not implemented yet lol');
         });
     }
 
-    updateTime() {
-        const timeDisplay = document.querySelector('.time-display');
-        const updateClock = () => {
+    startClock() {
+        const clockEl = document.querySelector('.time-display');
+        
+        const tick = () => {
             const now = new Date();
-            const timeString = now.toLocaleTimeString([], {
-                hour: '2-digit', 
-                minute: '2-digit',
+            const timeStr = now.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit', 
                 hour12: true
             });
-            timeDisplay.textContent = timeString;
+            if (clockEl) clockEl.textContent = timeStr;
         };
-        
-        updateClock();
-        setInterval(updateClock, 1000);
+
+        tick(); // run immediately
+        setInterval(tick, 1000);
     }
 }
 
-// Initialize the OS when DOM is loaded
+// fire it up when page loads
 document.addEventListener('DOMContentLoaded', () => {
     new RetroGenZOS();
 });
